@@ -66,8 +66,8 @@ export async function getEvents(): Promise<EventDocument[]> {
     const db = dbClient.db('default');
     const collection = db.collection<EventDocument>('event_treasure');
     
-    // Fetch only verified events
-    const eventsCursor = collection.find({ is_event: true });
+    // Fetch all events including non-events
+    const eventsCursor = collection.find({});
     
     // Sort logically if we want (e.g. maybe post_time descending or event_start ascending? Let's just fetch for now and transform)
     const events = await eventsCursor.sort({ post_time: -1 }).toArray();

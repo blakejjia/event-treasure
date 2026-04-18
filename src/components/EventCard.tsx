@@ -7,15 +7,17 @@ import { Calendar, Clock, MapPin, Tag } from 'lucide-react';
 import type { EventDocument } from '@/lib/mongodb';
 import { format, parseISO } from 'date-fns';
 
-export default function EventCard({ item, index }: { item: EventDocument, index: number }) {
+export default function EventCard({ item, index, onSelect }: { item: EventDocument, index: number, onSelect: () => void }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  const isEvent = item.is_event;
   const event = item.event;
-  if (!event) return null;
+
+  const displayTitle = isEvent && event?.title ? event.title : (item.caption?.split('\\n')[0] || 'Community Post');
 
   const getFormattedDate = () => {
-    if (!mounted) return null;
+    if (!mounted || !isEvent || !event) return null;
     if (event.event_start) {
       try {
         const date = parseISO(event.event_start);
@@ -28,7 +30,7 @@ export default function EventCard({ item, index }: { item: EventDocument, index:
   };
 
   const getFormattedTime = () => {
-    if (!mounted) return null;
+    if (!mounted || !isEvent || !event) return null;
     if (event.event_start) {
       try {
         const date = parseISO(event.event_start);
@@ -44,7 +46,7 @@ export default function EventCard({ item, index }: { item: EventDocument, index:
   const isLandscape = w > h * 1.15;
   const isPortrait = h > w * 1.15;
   
-  const contentLen = (event.title?.length || 0) + (item.special_notes?.notes?.length || 0);
+  const contentLen = (displayTitle?.length || 0) + (item.special_notes?.notes?.length || 0);
   const isContentHeavy = contentLen > 120;
 
   let colSpan = 'col-span-1';
@@ -68,12 +70,13 @@ export default function EventCard({ item, index }: { item: EventDocument, index:
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.05, ease: 'easeOut' }}
       whileHover={{ y: -4, scale: 1.01 }}
-      className={`group relative flex flex-col overflow-hidden rounded-3xl bg-white/80 dark:bg-zinc-900/80 shadow-md backdrop-blur-xl transition-all hover:shadow-2xl border border-zinc-200/50 dark:border-zinc-800/80 ${colSpan} ${rowSpan}`}
+      onClick={onSelect}
+      className={`cursor-pointer group relative flex flex-col overflow-hidden rounded-3xl bg-white/80 dark:bg-zinc-900/80 shadow-md backdrop-blur-xl transition-all hover:shadow-2xl border border-zinc-200/50 dark:border-zinc-800/80 ${colSpan} ${rowSpan}`}
     >
       <div className="relative flex-1 w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 min-h-[200px]">
         <Image
           src={item.displayUrl}
-          alt={event.title || 'Event image'}
+          alt={displayTitle || 'Event image'}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
@@ -82,7 +85,7 @@ export default function EventCard({ item, index }: { item: EventDocument, index:
         
         {/* Top Badges */}
         <div className="absolute top-4 left-4 right-4 flex flex-wrap gap-2">
-          {event.has_free_food && (
+          {event?.has_free_food && (
             <span className="rounded-full bg-emerald-500/90 px-3 py-1 text-xs font-semibold text-white shadow-sm backdrop-blur-sm">
               🍕 Free Food
             </span>
@@ -92,7 +95,7 @@ export default function EventCard({ item, index }: { item: EventDocument, index:
         {/* Bottom Image Info */}
         <div className="absolute bottom-4 left-4 right-4">
           <h3 className="line-clamp-2 text-xl md:text-2xl font-bold leading-tight text-white mb-2 shadow-black/50">
-            {event.title || 'Untitled Event'}
+            {displayTitle}
           </h3>
         </div>
       </div>
@@ -110,12 +113,12 @@ export default function EventCard({ item, index }: { item: EventDocument, index:
           )}
         </div>
 
-        {event.location_name && (
+        {event?.location_name && (
           <div className="flex items-start gap-2 text-sm text-zinc-600 dark:text-zinc-300">
             <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400 dark:text-rose-400" />
             <span className="leading-tight">
-              {event.location_name}
-              {event.location_details && <span className="opacity-70"> - {event.location_details}</span>}
+              {event?.location_name}
+              {event?.location_details && <span className="opacity-70"> - {event.location_details}</span>}
             </span>
           </div>
         )}

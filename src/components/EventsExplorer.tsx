@@ -2,14 +2,17 @@
 
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Pizza } from 'lucide-react';
+import { Search, Filter, Pizza, LayoutList } from 'lucide-react';
 import type { EventDocument } from '@/lib/mongodb';
 import EventCard from './EventCard';
+import EventModal from './EventModal';
 
 export default function EventsExplorer({ initialEvents }: { initialEvents: EventDocument[] }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTag, setActiveTag] = useState<string>('All');
   const [freeFoodOnly, setFreeFoodOnly] = useState(false);
+  const [showNonEvents, setShowNonEvents] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<EventDocument | null>(null);
 
   // Extract unique popular tags from all events
   const popularTags = useMemo(() => {
@@ -28,6 +31,9 @@ export default function EventsExplorer({ initialEvents }: { initialEvents: Event
 
   const filteredEvents = useMemo(() => {
     return initialEvents.filter(e => {
+      // Event filtering mode
+      if (!showNonEvents && !e.is_event) return false;
+
       // Free food filter
       if (freeFoodOnly && !e.event?.has_free_food) return false;
       
@@ -37,7 +43,8 @@ export default function EventsExplorer({ initialEvents }: { initialEvents: Event
       // Search filter
       if (searchQuery.trim() !== '') {
         const query = searchQuery.toLowerCase();
-        const titleMatch = e.event?.title?.toLowerCase().includes(query);
+        const displayTitle = e.is_event && e.event?.title ? e.event.title : (e.caption || '');
+        const titleMatch = displayTitle.toLowerCase().includes(query);
         const locationMatch = e.event?.location_name?.toLowerCase().includes(query);
         const tagsMatch = e.special_notes?.tags?.some(t => t.toLowerCase().includes(query));
         
@@ -46,7 +53,7 @@ export default function EventsExplorer({ initialEvents }: { initialEvents: Event
 
       return true;
     });
-  }, [initialEvents, searchQuery, activeTag, freeFoodOnly]);
+  }, [initialEvents, searchQuery, activeTag, freeFoodOnly, showNonEvents]);
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -115,6 +122,18 @@ export default function EventsExplorer({ initialEvents }: { initialEvents: Event
           <Pizza className="h-4 w-4" />
           Free Food
         </button>
+
+        <button
+          onClick={() => setShowNonEvents(!showNonEvents)}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all shadow-sm border ${
+            showNonEvents
+              ? 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border-indigo-500/30'
+              : 'bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50 dark:bg-zinc-800/50 dark:text-zinc-400 dark:border-zinc-700/50 dark:hover:bg-zinc-800'
+          }`}
+        >
+          <LayoutList className="h-4 w-4" />
+          Include Other Posts
+        </button>
       </div>
 
       {/* Grid */}
@@ -125,7 +144,7 @@ export default function EventsExplorer({ initialEvents }: { initialEvents: Event
         >
           <AnimatePresence mode='popLayout'>
             {filteredEvents.map((item, index) => (
-              <EventCard key={item._id} item={item} index={index} />
+              <EventCard key={item._id} item={item} index={index} onSelect={() => setSelectedEvent(item)} />
             ))}
           </AnimatePresence>
         </motion.div>
@@ -152,6 +171,16 @@ export default function EventsExplorer({ initialEvents }: { initialEvents: Event
           </button>
         </motion.div>
       )}
+
+      {/* Modal */}
+      <AnimatePresence>
+        {selectedEvent && (
+          <EventModal 
+            item={selectedEvent} 
+            onClose={() => setSelectedEvent(null)} 
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
