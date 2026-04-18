@@ -56,6 +56,8 @@ export interface EventDocument {
   displayUrl: string;
   post_time: string;
   url: string;
+  width?: number;
+  height?: number;
 }
 
 export async function getEvents(): Promise<EventDocument[]> {
