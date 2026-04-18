@@ -67,8 +67,9 @@ export default function EventCard({ item, index, onSelect }: { item: EventDocume
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.05, ease: 'easeOut' }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.05 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       whileHover={{ y: -4, scale: 1.01 }}
       onClick={onSelect}
       className={`cursor-pointer group relative flex flex-col overflow-hidden rounded-3xl bg-white/80 dark:bg-zinc-900/80 shadow-md backdrop-blur-xl transition-all hover:shadow-2xl border border-zinc-200/50 dark:border-zinc-800/80 ${colSpan} ${rowSpan}`}
