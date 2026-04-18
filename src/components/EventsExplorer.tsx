@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Masonry } from 'masonic';
 import { Search, Filter, Pizza, LayoutList } from 'lucide-react';
 import type { EventDocument } from '@/lib/mongodb';
 import EventCard from './EventCard';
@@ -30,7 +31,7 @@ export default function EventsExplorer({ initialEvents }: { initialEvents: Event
   }, [initialEvents]);
 
   const filteredEvents = useMemo(() => {
-    return initialEvents.filter(e => {
+    let filtered = initialEvents.filter(e => {
       // Event filtering mode
       if (!showNonEvents && !e.is_event) return false;
 
@@ -53,7 +54,34 @@ export default function EventsExplorer({ initialEvents }: { initialEvents: Event
 
       return true;
     });
+
+    filtered.sort((a, b) => {
+      const getSortDate = (item: EventDocument) => {
+        if (!showNonEvents) {
+          return new Date(item.event?.event_start || item.post_time).getTime();
+        }
+        if (item.is_event) {
+          return new Date(item.event?.event_start || item.post_time).getTime();
+        }
+        return new Date(item.post_time).getTime();
+      };
+      
+      const dateA = getSortDate(a);
+      const dateB = getSortDate(b);
+      
+      return dateB - dateA;
+    });
+
+    return filtered;
   }, [initialEvents, searchQuery, activeTag, freeFoodOnly, showNonEvents]);
+
+  // Use useCallback so Masonic has a stable render function
+  const MasonryCard = useCallback(
+    ({ index, data }: any) => (
+      <EventCard item={data} index={index} onSelect={() => setSelectedEvent(data)} />
+    ),
+    [setSelectedEvent]
+  );
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -138,16 +166,14 @@ export default function EventsExplorer({ initialEvents }: { initialEvents: Event
 
       {/* Grid */}
       {filteredEvents.length > 0 ? (
-        <motion.div 
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-[250px] gap-6 grid-flow-dense"
-        >
-          <AnimatePresence mode='popLayout'>
-            {filteredEvents.map((item, index) => (
-              <EventCard key={item._id} item={item} index={index} onSelect={() => setSelectedEvent(item)} />
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        <div className="w-full">
+          <Masonry
+            items={filteredEvents}
+            render={MasonryCard}
+            columnGutter={24}
+            columnWidth={300}
+          />
+        </div>
       ) : (
         <motion.div 
           initial={{ opacity: 0 }} 

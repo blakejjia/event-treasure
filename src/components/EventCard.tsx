@@ -26,29 +26,8 @@ export default function EventCard({ item, index, onSelect }: { item: EventDocume
     return formatEventTime(event.event_start);
   };
 
-  // Bento Box sizing logic based on content and picture size
-  const w = item.width || 1;
-  const h = item.height || 1;
-  const isLandscape = w > h * 1.15;
-  const isPortrait = h > w * 1.15;
-  
-  const contentLen = (displayTitle?.length || 0) + (item.special_notes?.notes?.length || 0);
-  const isContentHeavy = contentLen > 120;
-
-  let colSpan = 'col-span-1';
-  let rowSpan = 'row-span-1';
-
-  if (isLandscape) {
-    colSpan = 'md:col-span-2';
-  } else if (isPortrait || isContentHeavy) {
-    rowSpan = 'md:row-span-2';
-  }
-
-  // If it's a huge thing, make it a focal piece in bento
-  if (isLandscape && isContentHeavy) {
-    colSpan = 'md:col-span-2';
-    rowSpan = 'md:row-span-2';
-  }
+  // Image aspect ratio constraint for Masonry layout
+  const aspectRatio = item.width && item.height ? `${item.width} / ${item.height}` : '4 / 3';
 
   return (
     <motion.div
@@ -58,9 +37,12 @@ export default function EventCard({ item, index, onSelect }: { item: EventDocume
       transition={{ duration: 0.5, ease: 'easeOut' }}
       whileHover={{ y: -4, scale: 1.01 }}
       onClick={onSelect}
-      className={`cursor-pointer group relative flex flex-col overflow-hidden rounded-3xl bg-white/80 dark:bg-zinc-900/80 shadow-md backdrop-blur-xl transition-all hover:shadow-2xl border border-zinc-200/50 dark:border-zinc-800/80 ${colSpan} ${rowSpan}`}
+      className={`cursor-pointer group relative flex flex-col overflow-hidden rounded-3xl bg-white/80 dark:bg-zinc-900/80 shadow-md backdrop-blur-xl transition-all hover:shadow-2xl border border-zinc-200/50 dark:border-zinc-800/80`}
     >
-      <div className="relative flex-1 w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 min-h-[200px]">
+      <div 
+        className="relative w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800"
+        style={{ aspectRatio }}
+      >
         <Image
           src={item.displayUrl}
           alt={displayTitle || 'Event image'}
