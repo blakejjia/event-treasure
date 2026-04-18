@@ -47,6 +47,7 @@ export default function EventCard({ item, index, onSelect }: { item: EventDocume
           src={item.displayUrl}
           alt={displayTitle || 'Event image'}
           fill
+          priority={index < 6}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
         />

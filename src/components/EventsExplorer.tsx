@@ -2,7 +2,11 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Masonry } from 'masonic';
+import dynamic from 'next/dynamic';
+
+const Masonry = dynamic(() => import('masonic').then((mod) => mod.Masonry as any), {
+  ssr: false,
+}) as any;
 import { Search, Filter, Pizza, LayoutList } from 'lucide-react';
 import type { EventDocument } from '@/lib/mongodb';
 import EventCard from './EventCard';
@@ -168,6 +172,7 @@ export default function EventsExplorer({ initialEvents }: { initialEvents: Event
       {filteredEvents.length > 0 ? (
         <div className="w-full">
           <Masonry
+            key={`${showNonEvents}-${freeFoodOnly}-${activeTag}-${searchQuery}`}
             items={filteredEvents}
             render={MasonryCard}
             columnGutter={24}
