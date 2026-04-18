@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Calendar, Clock, MapPin, Tag, X, ExternalLink, Info } from 'lucide-react';
 import type { EventDocument } from '@/lib/mongodb';
-import { format, parseISO } from 'date-fns';
+import { formatEventDate, formatEventTime } from '@/lib/formatters';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
@@ -29,24 +29,12 @@ export default function EventModal({ item, onClose }: EventModalProps) {
 
   const getFormattedDate = () => {
     if (!mounted || !isEvent || !event) return null;
-    if (event.event_start) {
-      try {
-        return format(parseISO(event.event_start), 'EEEE, MMMM d, yyyy');
-      } catch (e) {
-        return event.event_date_text;
-      }
-    }
-    return event.event_date_text;
+    return formatEventDate(event.event_start);
   };
 
   const getFormattedTime = () => {
     if (!mounted || !isEvent || !event) return null;
-    if (event.event_start) {
-      try {
-        return format(parseISO(event.event_start), 'h:mm a');
-      } catch (e) {}
-    }
-    return null;
+    return formatEventTime(event.event_start);
   };
 
   return (

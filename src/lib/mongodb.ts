@@ -42,7 +42,6 @@ export interface EventDocument {
     has_free_food: boolean | null;
     event_start: string | null;
     event_end: string | null;
-    event_date_text: string | null;
     location_name: string | null;
     location_details: string | null;
   } | null;

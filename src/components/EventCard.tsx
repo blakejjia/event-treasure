@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, MapPin, Tag } from 'lucide-react';
 import type { EventDocument } from '@/lib/mongodb';
-import { format, parseISO } from 'date-fns';
+import { formatEventDate, formatEventTime } from '@/lib/formatters';
 
 export default function EventCard({ item, index, onSelect }: { item: EventDocument, index: number, onSelect: () => void }) {
   const [mounted, setMounted] = useState(false);
@@ -18,26 +18,12 @@ export default function EventCard({ item, index, onSelect }: { item: EventDocume
 
   const getFormattedDate = () => {
     if (!mounted || !isEvent || !event) return null;
-    if (event.event_start) {
-      try {
-        const date = parseISO(event.event_start);
-        return format(date, 'MMM d, yyyy');
-      } catch (e) {
-        return event.event_date_text;
-      }
-    }
-    return event.event_date_text;
+    return formatEventDate(event.event_start);
   };
 
   const getFormattedTime = () => {
     if (!mounted || !isEvent || !event) return null;
-    if (event.event_start) {
-      try {
-        const date = parseISO(event.event_start);
-        return format(date, 'h:mm a');
-      } catch (e) {}
-    }
-    return null;
+    return formatEventTime(event.event_start);
   };
 
   // Bento Box sizing logic based on content and picture size
