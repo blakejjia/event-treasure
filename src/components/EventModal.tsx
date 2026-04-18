@@ -1,9 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Calendar, Clock, MapPin, Tag, X, ExternalLink, Info } from 'lucide-react';
+import { Calendar, Clock, MapPin, Tag, X, ExternalLink, Info, CalendarPlus } from 'lucide-react';
 import type { EventDocument } from '@/lib/mongodb';
 import { formatEventDate, formatEventTime } from '@/lib/formatters';
+import { downloadEventICS } from '@/lib/calendar';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
@@ -93,9 +94,23 @@ export default function EventModal({ item, onClose }: EventModalProps) {
 
               {isEvent && (
                 <div className="flex flex-col gap-3 text-sm md:text-base text-zinc-600 dark:text-zinc-300">
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5 shrink-0 text-indigo-500" />
-                    <span className="font-medium h-6">{getFormattedDate()}</span>
+                  <div className="flex items-center justify-between group">
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-5 h-5 shrink-0 text-indigo-500" />
+                      <span className="font-medium h-6">{getFormattedDate()}</span>
+                    </div>
+
+                    {/* Quick export button */}
+                    {mounted && (
+                      <button 
+                        onClick={() => downloadEventICS(item)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100/50 dark:bg-zinc-800/50 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 text-zinc-500 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400 transition-all text-xs font-bold border border-zinc-200/50 dark:border-zinc-700/50 hover:border-indigo-200/50 dark:hover:border-indigo-500/30"
+                        title="Download Calendar (.ics) file"
+                      >
+                        <CalendarPlus className="w-4 h-4" />
+                        <span>ICS</span>
+                      </button>
+                    )}
                   </div>
                   {mounted && getFormattedTime() && (
                     <div className="flex items-center gap-3">
