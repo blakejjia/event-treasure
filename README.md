@@ -11,22 +11,8 @@ In a campus environment buzzing with activity, information overload is a real pr
 - **Bento & Masonry Hybrid Interface:** We deliver a premium, visually engaging discovery experience. Utilizing a highly optimized gapless Masonry grid, Event Treasure provides a beautiful "Bento Box" aesthetic that is fully dynamic, retaining original media aspect ratios while keeping the layout impeccably clean.
 - **Effortless Readability:** Information is parsed and presented specifically for skimmability, allowing students to map out their weeks in seconds.
 
-## 🛠️ Technology Stack
-
-Event Treasure is built for performance, scale, and extremely fluid UX:
-
-- **Framework:** Next.js (App Router) for hybrid SSR/client-side rendering.
-- **Styling:** Tailwind CSS integrated with Framer Motion for kinetic, Awwwards-inspired typography and micro-interactions.
-- **Layout Engine:** `masonic` for high-performance, gapless algorithmic masonry grid rendering.
-- **Database:** MongoDB for flexible, scalable aggregation of unstructured AI-processed event schemas.
-- **Date/Time Handling:** `dayjs` for robust relative time formatting and local timezone rendering.
-
-## 📋 Product Roadmap
-- [x] Initial full-stack scaffolding and database integration.
-- [x] Dynamic Bento / Masonry event grid.
-- [x] Time-based intelligent ranking and Day.js relative formatting.
-- [ ] Native calendar exports (.ics generation).
-- [ ] Advanced map-based location view.
+## ️ Technology Stack
+For a detailed look at our architecture and dependencies, see [TECH_STACK.md](TECH_STACK.md).
 
 ## 🤝 Contributing
 As an open initiative for the Waterloo community, contributions are highly welcomed! Please see our contribution guidelines before opening a pull request.
