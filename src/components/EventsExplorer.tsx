@@ -91,11 +91,11 @@ export default function EventsExplorer({ initialEvents }: { initialEvents: Event
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-2">
-            Discover Events
-          </h2>
+          <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-2">
+            Waterloo Event Finder
+          </h1>
           <p className="text-zinc-500 dark:text-zinc-400">
-            Find the perfect events to relax, network, and save your precious time.
+            The premier event aggregator for the Waterloo area, helping UWaterloo students find the perfect events to relax, network, and save time.
           </p>
         </div>
 

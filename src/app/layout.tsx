@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://event-treasure.jia-yx.com"),
-  title: "Event Treasure",
-  description: "Discover community events and posts near uwaterloo.",
+  title: "Event Treasure | Waterloo Event Finder & Aggregator",
+  description: "The ultimate event finder and aggregator for the Waterloo area. Discover community events and social posts curated specifically for UWaterloo students.",
 };
 
 export default function RootLayout({

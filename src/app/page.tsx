@@ -11,7 +11,8 @@ export default async function Home() {
         <EventsExplorer initialEvents={events} />
       </main>
       <footer className="py-8 mt-12 text-center text-sm text-zinc-500 dark:text-zinc-500 border-t border-zinc-200 dark:border-zinc-800/30">
-        <p>All event data is summarized by AI.</p>
+        <p>Event Treasure is a dedicated event aggregator for the Waterloo area, helping UWaterloo students stay connected with the local community.</p>
+        <p className="mt-2 text-xs opacity-70">All event data is summarized by AI.</p>
         <p className="mt-2">
           <Link href="/privacy" className="hover:text-zinc-900 dark:hover:text-zinc-300 transition-colors underline underline-offset-4">
             Privacy Policy
