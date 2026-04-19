@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://event-treasure.jia-yx.com"),
   title: "Event Treasure",
   description: "Discover community events and posts near uwaterloo.",
 };
